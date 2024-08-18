@@ -41,9 +41,9 @@ public class Intake extends SubsystemBase {
 
     public Command runIntakeUntilNotePresent() {
         return Commands.run(this::runIntake, this)
-                .onlyIf(() -> !this.hasNote())
-                .until(this::hasNote)
-                .finallyDo(this::runIdle);
+            .onlyIf(() -> !this.hasNote())
+            .until(this::hasNote)
+            .finallyDo(this::runIdle);
     }
 
     public Command runIntakeUntilNotePresent(XboxController hid) {
@@ -56,10 +56,10 @@ public class Intake extends SubsystemBase {
 
     public Command launchNote() {
         return Commands.run(this::runShoot, this)
-                .onlyIf(this::hasNote)
-                .until(()-> !this.hasNote());
+            .onlyIf(this::hasNote)
+            .until(()-> !this.hasNote());
     }
-
+    
     @Override
     public void periodic() {
         SmartDashboard.putBoolean("Intake/NotePresent", hasNote());

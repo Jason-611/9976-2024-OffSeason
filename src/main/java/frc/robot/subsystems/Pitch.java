@@ -20,9 +20,9 @@ import frc.robot.Robot;
 
 public class Pitch extends SubsystemBase{
     private static final double GEAR_RATIO = 222.2133;
-    private static final ArmFeedforward k_feedForward = new ArmFeedforward(0.03, 0.26, 2.99);
+    private static final ArmFeedforward k_feedForward = new ArmFeedforward(0.03, 0.18, 2.99);
     private static final PIDController k_feedBack = new PIDController(7.0/Math.toRadians(26), 0, 0);
-    private static final TrapezoidProfile k_profile = new TrapezoidProfile(new Constraints(360, 720));
+    private static final TrapezoidProfile k_profile = new TrapezoidProfile(new Constraints(180, 240));
     private static final double tolerance = Math.toRadians(3);
     /* arm positions, in degrees */
     public static final double LOWEST_POSITION = Math.toRadians(2),
@@ -43,7 +43,7 @@ public class Pitch extends SubsystemBase{
         pitchCurrentLimit.SupplyCurrentLimitEnable = true;
         pitchFalcon.getConfigurator().apply(pitchCurrentLimit);
         pitchFalcon.setNeutralMode(NeutralModeValue.Coast);
-        pitchFalcon.setInverted(false);
+        pitchFalcon.setInverted(true);
         pitchFalcon.optimizeBusUtilization();
         setDefaultCommand(Commands.run(() -> runSetPointProfiled(LOWEST_POSITION), this));
     }
