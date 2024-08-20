@@ -50,7 +50,7 @@ public class Hang extends SubsystemBase{
             hangFalcon.setNeutralMode(NeutralModeValue.Coast);
             hangFalcon.setInverted(true);
             hangFalcon.optimizeBusUtilization();
-            setDefaultCommand(Commands.run(() -> runSetPointProfiled(TIGHT_POSITION), this));
+            setDefaultCommand(Commands.run(() -> runSetPointProfiled(LOOSE_POSITION), this));
             hangFalcons.add(hangFalcon);
         }
     }
