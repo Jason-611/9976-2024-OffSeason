@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.commands.AimAtAmp;
 import frc.robot.commands.AimAtSpeaker;
 import frc.robot.commands.ShootSequence;
@@ -31,7 +32,8 @@ public class RobotContainer {
   private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
-  private final CommandXboxController pilotJoystick = new CommandXboxController(0); // My joystick
+  private final CommandJoystick pilotJoystick = new CommandJoystick(0);
+  private final CommandXboxController copilotJoystick = new CommandXboxController(1);// My joystick
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -50,28 +52,28 @@ public class RobotContainer {
   
   private void configureBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-pilotJoystick.getRightY() * MaxSpeed) // Drive forward with negative Y (forward)
-            .withVelocityY(-pilotJoystick.getRightX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-pilotJoystick.getLeftX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+        drivetrain.applyRequest(() -> drive.withVelocityX(-pilotJoystick.getY() * MaxSpeed) // Drive forward with negative Y (forward)
+            .withVelocityY(-pilotJoystick.getX() * MaxSpeed) // Drive left with negative X (left)
+            .withRotationalRate(-pilotJoystick.getZ() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
 
-    pilotJoystick.x().whileTrue(drivetrain.applyRequest(() -> brake));
+    copilotJoystick.x().whileTrue(drivetrain.applyRequest(() -> brake));
 
     // reset the field-centric heading on left bumper press
-    pilotJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative));
+    copilotJoystick.start().onTrue(drivetrain.runOnce(drivetrain::seedFieldRelative));
 
     /* intake commands */
-    pilotJoystick.leftTrigger(0.5).whileTrue(intake.runIntakeUntilNotePresent(pilotJoystick.getHID()));
-    pilotJoystick.a().whileTrue(Commands.run(intake::runReverse, intake));
+    copilotJoystick.leftTrigger(0.5).whileTrue(intake.runIntakeUntilNotePresent(copilotJoystick.getHID()));
+    copilotJoystick.a().whileTrue(Commands.run(intake::runReverse, intake));
 
     /* shooter commands */
-    pilotJoystick.b().whileTrue(new AimAtSpeaker(pitch, shooter));
-    pilotJoystick.y().whileTrue(new AimAtAmp(pitch, shooter));
-    pilotJoystick.rightTrigger(0.5).whileTrue(Commands.run(intake::runIdle, intake));
+    copilotJoystick.b().whileTrue(new AimAtSpeaker(pitch, shooter));
+    copilotJoystick.y().whileTrue(new AimAtAmp(pitch, shooter));
+    copilotJoystick.rightTrigger(0.5).whileTrue(Commands.run(intake::runIdle, intake));
 
     /* hang commands */
-    pilotJoystick.button(5).whileTrue(new LooseHook(hang));
-    pilotJoystick.button(6).whileTrue(new HangOnStage(hang));
+    copilotJoystick.button(5).whileTrue(new LooseHook(hang));
+    copilotJoystick.button(6).whileTrue(new HangOnStage(hang));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
