@@ -17,11 +17,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.AimAtAmp;
 import frc.robot.commands.AimAtSpeaker;
 import frc.robot.commands.ShootSequence;
+import frc.robot.commands.LooseHook;
+import frc.robot.commands.HangOnStage;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pitch;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Hang;
 
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
@@ -43,6 +46,7 @@ public class RobotContainer {
   private final Pitch pitch = new Pitch();
   private final Shooter shooter = new Shooter();
   private final Intake intake = new Intake();
+  private final Hang hang = new Hang();
   
   private void configureBindings() {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -65,6 +69,9 @@ public class RobotContainer {
     pilotJoystick.y().whileTrue(new AimAtAmp(pitch, shooter));
     pilotJoystick.rightTrigger(0.5).whileTrue(Commands.run(intake::runIdle, intake));
 
+    /* hang commands */
+    pilotJoystick.button(5).whileTrue(new LooseHook(hang));
+    pilotJoystick.button(6).whileTrue(new HangOnStage(hang));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
