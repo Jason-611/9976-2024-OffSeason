@@ -29,6 +29,8 @@ public class Pitch extends SubsystemBase{
         SHOOTING_POSITION = Math.toRadians(40),
         AMP_POSITION_DEG = Math.toRadians(90);
 
+    public static final double MOVE_ANGDEG = Math.toRadians(1); //angdeg   an angle, in degrees
+
     private final TalonFX pitchFalcon = new TalonFX(17);
     private final StatusSignal<Double> pitchPositionRevolutions, supplyCurrent;
     private State currentState = new State(LOWEST_POSITION, 0);

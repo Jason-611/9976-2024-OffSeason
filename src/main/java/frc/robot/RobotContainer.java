@@ -20,6 +20,10 @@ import frc.robot.commands.AimAtSpeaker;
 import frc.robot.commands.ShootSequence;
 import frc.robot.commands.LooseHook;
 import frc.robot.commands.HangOnStage;
+import frc.robot.commands.PitchUp;
+import frc.robot.commands.PitchDown;
+import frc.robot.commands.ShootAtAmp;
+import frc.robot.commands.ShootAtSpeaker;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
@@ -28,8 +32,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Hang;
 
 public class RobotContainer {
-  private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
-  private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+  private final double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
+  private final double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandJoystick pilotJoystick = new CommandJoystick(0);
@@ -74,6 +78,14 @@ public class RobotContainer {
     /* hang commands */
     copilotJoystick.button(5).whileTrue(new LooseHook(hang));
     copilotJoystick.button(6).whileTrue(new HangOnStage(hang));
+
+    /* pitch up and down commands */
+    pilotJoystick.button(7).whileTrue(new PitchUp(pitch));
+    pilotJoystick.button(8).whileTrue(new PitchDown(pitch));
+
+    /* shoot commands */
+    pilotJoystick.button(9).whileTrue(new ShootAtAmp(shooter));
+    pilotJoystick.button(10).whileTrue(new ShootAtSpeaker(shooter));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
