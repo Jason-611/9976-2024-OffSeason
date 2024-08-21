@@ -36,8 +36,8 @@ public class RobotContainer {
   private final double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
-  private final CommandJoystick pilotJoystick = new CommandJoystick(0);
-  private final CommandXboxController copilotJoystick = new CommandXboxController(1);// My joystick
+  private final CommandJoystick pilotJoystick = new CommandJoystick(0);//Pilot Joystick
+  private final CommandXboxController copilotJoystick = new CommandXboxController(1);// Xbox controller
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -58,7 +58,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         drivetrain.applyRequest(() -> drive.withVelocityX(-pilotJoystick.getY() * MaxSpeed) // Drive forward with negative Y (forward)
             .withVelocityY(-pilotJoystick.getX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-pilotJoystick.getZ() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            .withRotationalRate(pilotJoystick.getZ() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
 
     copilotJoystick.x().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -70,7 +70,7 @@ public class RobotContainer {
     copilotJoystick.leftTrigger(0.5).whileTrue(intake.runIntakeUntilNotePresent(copilotJoystick.getHID()));
     copilotJoystick.a().whileTrue(Commands.run(intake::runReverse, intake));
 
-    /* shooter commands */
+    /* fix-angled shooter commands */
     copilotJoystick.b().whileTrue(new AimAtSpeaker(pitch, shooter));
     copilotJoystick.y().whileTrue(new AimAtAmp(pitch, shooter));
     copilotJoystick.rightTrigger(0.5).whileTrue(Commands.run(intake::runIdle, intake));
@@ -80,12 +80,12 @@ public class RobotContainer {
     copilotJoystick.button(6).whileTrue(new HangOnStage(hang));
 
     /* pitch up and down commands */
-    pilotJoystick.button(7).whileTrue(new PitchUp(pitch));
-    pilotJoystick.button(8).whileTrue(new PitchDown(pitch));
+    copilotJoystick.button(7).whileTrue(new PitchUp(pitch));
+    copilotJoystick.button(8).whileTrue(new PitchDown(pitch));
 
-    /* shoot commands */
-    pilotJoystick.button(9).whileTrue(new ShootAtAmp(shooter));
-    pilotJoystick.button(10).whileTrue(new ShootAtSpeaker(shooter));
+    /* loose-angled shooter commands */
+    copilotJoystick.button(10).whileTrue(new ShootAtAmp(shooter));
+    copilotJoystick.button(11).whileTrue(new ShootAtSpeaker(shooter));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
