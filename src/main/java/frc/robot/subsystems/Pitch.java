@@ -26,10 +26,12 @@ public class Pitch extends SubsystemBase{
     private static final double tolerance = Math.toRadians(3);
     /* arm positions, in degrees */
     public static final double LOWEST_POSITION = Math.toRadians(2),
+        NOTE_STUCK_RAD = Math.toRadians(10),
         SHOOTING_POSITION = Math.toRadians(40),
         AMP_POSITION_DEG = Math.toRadians(90);
 
     public static final double MOVE_ANGDEG = Math.toRadians(1); //angdeg   an angle, in degrees
+    public boolean lock = false;
 
     private final TalonFX pitchFalcon = new TalonFX(17);
     private final StatusSignal<Double> pitchPositionRevolutions, supplyCurrent;
@@ -47,7 +49,8 @@ public class Pitch extends SubsystemBase{
         pitchFalcon.setNeutralMode(NeutralModeValue.Coast);
         pitchFalcon.setInverted(true);
         pitchFalcon.optimizeBusUtilization();
-        setDefaultCommand(Commands.run(() -> runSetPointProfiled(LOWEST_POSITION), this));
+        // setDefaultCommand(Commands.run(() -> runSetPointProfiled(LOWEST_POSITION), this));
+        runSetPointProfiled(LOWEST_POSITION);
     }
 
     @Override
@@ -62,7 +65,14 @@ public class Pitch extends SubsystemBase{
                 pitchPositionRevolutions.getValue() / GEAR_RATIO
         ) - LOWEST_POSITION;
     }
-
+    public void runSetPointManually(double setPoint) {
+        if (!lock){
+            if (setPoint < 0){
+                setPoint = -setPoint;
+            }
+            runSetPointProfiled(setPoint);
+        }
+    }
     public void runSetPointProfiled(double setPoint) {
         this.setPoint = setPoint;
         final State goalStateDeg = new State(setPoint, 0);
@@ -84,4 +94,5 @@ public class Pitch extends SubsystemBase{
     public boolean inPosition() {
         return Math.abs(getArmAngleRad() - setPoint) < tolerance;
     }
+
 }

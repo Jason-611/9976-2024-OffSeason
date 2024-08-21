@@ -13,7 +13,10 @@ public class PitchUp extends Command {
 
     @Override
     public void execute() {
-        double goalRadians = pitch.getArmAngleRad() + Pitch.MOVE_ANGDEG;
-        pitch.runSetPointProfiled(goalRadians);
+        double currentRad = pitch.getArmAngleRad();
+        if (currentRad < Pitch.AMP_POSITION_DEG) {
+            double goalRadians = currentRad + Pitch.MOVE_ANGDEG;
+            pitch.runSetPointProfiled(goalRadians);
+        }
     }
 }

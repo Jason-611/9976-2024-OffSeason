@@ -18,7 +18,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.commands.AimAtAmp;
 import frc.robot.commands.AimAtSpeaker;
 import frc.robot.commands.ShootSequence;
+import frc.robot.commands.TogglePitchLock;
 import frc.robot.commands.LooseHook;
+import frc.robot.commands.NoteStucked;
 import frc.robot.commands.HangOnStage;
 import frc.robot.commands.PitchUp;
 import frc.robot.commands.PitchDown;
@@ -61,6 +63,8 @@ public class RobotContainer {
             .withRotationalRate(pilotJoystick.getZ() * MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
 
+    pitch.setDefaultCommand(Commands.run(() -> pitch.runSetPointManually((copilotJoystick.getRightY() * Math.toRadians(90)) + Pitch.LOWEST_POSITION), pitch));
+
     copilotJoystick.x().whileTrue(drivetrain.applyRequest(() -> brake));
 
     // reset the field-centric heading on left bumper press
@@ -86,6 +90,12 @@ public class RobotContainer {
     /* loose-angled shooter commands */
     copilotJoystick.button(10).whileTrue(new ShootAtAmp(shooter));
     copilotJoystick.button(11).whileTrue(new ShootAtSpeaker(shooter));
+
+    /* toggle lock pitch  commands */
+    copilotJoystick.button(12).whileTrue(new TogglePitchLock(pitch));
+
+    /* note stucked commands */
+    copilotJoystick.button(13).whileTrue(new NoteStucked(pitch, intake));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
