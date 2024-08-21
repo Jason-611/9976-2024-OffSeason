@@ -30,12 +30,15 @@ public class Hang extends SubsystemBase{
     public static final double TIGHT_POSITION = 5 * 360,    // eg: 5 rounds
         LOOSE_POSITION = 0;
 
+    public double init_radians = 0;
+
     private final List<TalonFX> hangFalcons = new ArrayList<>();
     private final List<StatusSignal<Double>> hangPositionRevolutionsList = new ArrayList<>(), supplyCurrentList = new ArrayList<>();
     private State currentState = new State(TIGHT_POSITION, 0);
     private double setPoint = TIGHT_POSITION;
 
     public Hang() {
+        int i = 0;
         for (Integer deviceId : deviceIds) {
             TalonFX hangFalcon = new TalonFX(deviceId);
             StatusSignal<Double> hangPositionRevolutions = hangFalcon.getPosition();
@@ -50,8 +53,11 @@ public class Hang extends SubsystemBase{
             hangFalcon.setNeutralMode(NeutralModeValue.Coast);
             hangFalcon.setInverted(true);
             hangFalcon.optimizeBusUtilization();
-            setDefaultCommand(Commands.run(() -> runSetPointProfiled(LOOSE_POSITION), this));
+
+            // setDefaultCommand(Commands.run(() -> runSetPointProfiled(LOOSE_POSITION), this));
             hangFalcons.add(hangFalcon);
+            init_radians = getRotationsRad(i);
+            i++;
         }
     }
 
@@ -71,7 +77,7 @@ public class Hang extends SubsystemBase{
     }
 
     public void runSetPointProfiled(double setPoint) {
-        this.setPoint = setPoint;
+        this.setPoint = setPoint + init_radians;
         final State goalStateDeg = new State(setPoint, 0);
         this.currentState = k_profile.calculate(Robot.kDefaultPeriod, currentState, goalStateDeg);
 
