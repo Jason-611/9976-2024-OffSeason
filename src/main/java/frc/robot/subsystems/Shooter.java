@@ -28,8 +28,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runSpeakerShot() {
-    shooterFalcon1.set(0.5);
-    shooterFalcon2.set(0.5);
+    shooterFalcon1.set(0.65);
+    shooterFalcon2.set(0.65);
   }
 
   public void runAmpShot() {

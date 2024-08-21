@@ -80,22 +80,22 @@ public class RobotContainer {
     copilotJoystick.rightTrigger(0.5).whileTrue(Commands.run(intake::runIdle, intake));
 
     /* hang commands */
-    copilotJoystick.button(5).whileTrue(new LooseHook(hang));
-    copilotJoystick.button(6).whileTrue(new HangOnStage(hang));
+    //copilotJoystick.button(7).whileTrue(new LooseHook(hang));
+    //copilotJoystick.button(8).whileTrue(new HangOnStage(hang));
 
     /* pitch up and down commands */
-    copilotJoystick.button(7).whileTrue(new PitchUp(pitch));
-    copilotJoystick.button(8).whileTrue(new PitchDown(pitch));
+    //copilotJoystick.button(5).whileTrue(new PitchUp(pitch));
+    //copilotJoystick.button(6).whileTrue(new PitchDown(pitch));
 
     /* loose-angled shooter commands */
-    copilotJoystick.button(10).whileTrue(new ShootAtAmp(shooter));
-    copilotJoystick.button(11).whileTrue(new ShootAtSpeaker(shooter));
+    //copilotJoystick.button(10).whileTrue(new ShootAtAmp(shooter));
+    //copilotJoystick.button(11).whileTrue(new ShootAtSpeaker(shooter));
 
     /* toggle lock pitch  commands */
-    copilotJoystick.button(12).whileTrue(new TogglePitchLock(pitch));
+    //copilotJoystick.button(12).whileTrue(new TogglePitchLock(pitch));
 
     /* note stucked commands */
-    copilotJoystick.button(13).whileTrue(new NoteStucked(pitch, intake));
+    copilotJoystick.button(5).whileTrue(new NoteStucked(pitch, intake));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));

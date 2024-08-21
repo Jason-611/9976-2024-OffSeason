@@ -14,7 +14,7 @@ public class PitchDown extends Command {
     @Override
     public void execute() {
         double currentRad = pitch.getArmAngleRad();
-        if (currentRad > Pitch.LOWEST_POSITION) {
+        if (pitch.lock && currentRad > Pitch.LOWEST_POSITION) {
             double goalRadians = currentRad - Pitch.MOVE_ANGDEG;
             pitch.runSetPointProfiled(goalRadians);
         }

@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -80,9 +81,9 @@ public class Hang extends SubsystemBase{
             this.setPoint = setPoint + initPositions.get(i);
             final State goalStateDeg = new State(setPoint, 0);
             this.currentState = k_profile.calculate(Robot.kDefaultPeriod, currentState, goalStateDeg);
-            if (inPosition(i)){ //if position is ok,
-                continue;
-            }
+            // if (inPosition(i)){ //if position is ok,
+            //     continue;
+            // }
             final double feedForwardVoltage = k_feedForward.calculate(
                     getRotationsRad(i),
                     currentState.velocity
@@ -99,6 +100,11 @@ public class Hang extends SubsystemBase{
     public boolean inPosition(int index) {
         double tightRad = Math.toRadians(TIGHT_POSITION);
         double looseRad = Math.toRadians(LOOSE_POSITION);
-        return Math.abs(getRotationsRad(index) - setPoint) > tightRad && setPoint + 0.01 >= tightRad || Math.abs(getRotationsRad(index) - setPoint) < looseRad && setPoint - 0.01 <= looseRad;
+        boolean isFinished = Math.abs(getRotationsRad(index) - initPositions.get(index) - setPoint) > tightRad && setPoint + 0.01 >= tightRad || Math.abs(getRotationsRad(index) - initPositions.get(index) - setPoint) < looseRad && setPoint - 0.01 <= looseRad;
+        if (isFinished && setPoint + 0.01 >= tightRad){
+            final StaticBrake staticBrake = new StaticBrake();
+            hangFalcons.get(index).setControl(staticBrake);
+        }
+        return isFinished;
     }
 }

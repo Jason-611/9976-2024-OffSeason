@@ -36,7 +36,7 @@ public class Intake extends SubsystemBase {
         intakeFalcon.set(-0.5);
     }
     public void runShoot() {
-        intakeFalcon.set(0.8);
+        intakeFalcon.set(01);
     }
 
     public Command runIntakeUntilNotePresent() {

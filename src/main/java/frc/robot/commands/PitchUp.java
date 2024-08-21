@@ -14,7 +14,7 @@ public class PitchUp extends Command {
     @Override
     public void execute() {
         double currentRad = pitch.getArmAngleRad();
-        if (currentRad < Pitch.AMP_POSITION_DEG) {
+        if (pitch.lock && currentRad < Pitch.AMP_POSITION_DEG) {
             double goalRadians = currentRad + Pitch.MOVE_ANGDEG;
             pitch.runSetPointProfiled(goalRadians);
         }
